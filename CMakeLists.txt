@@ -1,23 +1,35 @@
 cmake_minimum_required(VERSION 3.2.2)
 
+project(explorer)
+
+set(EXPLORER_VERSION_MAJOR 0)
+set(EXPLORER_VERSION_MINOR 1)
+set(EXPLORER_VERSION_PATCH 1)
+set(EXPLORER_VERSION_TWEAK 0)
+set(EXPLORER_VERSION ${EXPLORER_VERSION_MAJOR}.${EXPLORER_VERSION_MINOR}.${EXPLORER_VERSION_PATCH}.${EXPLORER_VERSION_TWEAK})
+set(EXPLORER_VERSION_STRING "v${EXPLORER_VERSION}")
+
 set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(explorer)
-set(EXPLORER_VERSION_MAJOR 0)
-set(EXPLORER_VERSION_MINOR 1)
-set(EXPLORER_VERSION_PATCH 0)
-set(EXPLORER_VERSION_TWEAK 0)
-set(EXPLORER_VERSION
-${EXPLORER_VERSION_MAJOR}.${EXPLORER_VERSION_MINOR}.${EXPLORER_VERSION_PATCH}.${EXPLORER_VERSION_TWEAK})
-set(EXPLORER_VERSION_STRING "v${EXPLORER_VERSION}")
+add_library(explorer STATIC ${CMAKE_CURRENT_SOURCE_DIR}/sources/explorer.cpp)
 
-add_executable(explorer ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+target_include_directories(explorer PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
-target_link_libraries(${PROJECT_NAME} -pthread -std=c++14 -lboost_system -lboost_filesystem)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/example/ DESTINATION example)
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-install(FILES main.cpp DESTINATION bin)
+install(TARGETS explorer
+    EXPORT explorer-config
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
+install(EXPORT explorer-config DESTINATION cmake)
+
+target_link_libraries(${PROJECT_NAME} -lboost_system -lboost_filesystem -pthread)
 
 include(CPackConfig.cmake)
