@@ -26,17 +26,21 @@ addons:
 script:
 
 - export EXPLORER_LOG_PATH="log.txt"
+-    "cmake -H. -B_builds -DCPACK_GENERATOR=DEB",
 
-- cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install -DBUILD_TESTS=ON -DCPACK_GENERATOR=TGZ
 
-- cmake --build _build
+-    "cmake --build _builds",
 
-- cd _build
+
+-    "cmake --build _builds --target package"
+
+
+
+- cd _builds
 
 - ./explorer CMakeCache.txt
 
 - cd ..
 
-- cmake --build _build --target package
 
-- mv _build/*.tar.gz artifacts
+- mv _builds/*.tar.gz artifacts
