@@ -13,12 +13,8 @@ set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(explorer STATIC ${CMAKE_CURRENT_SOURCE_DIR}/sources/explorer.cpp)
+add_library(explorer STATIC ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
-target_include_directories(explorer PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
 
 install(TARGETS explorer
     EXPORT explorer-config
@@ -27,9 +23,8 @@ install(TARGETS explorer
     LIBRARY DESTINATION lib
 )
 
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
-install(EXPORT explorer-config DESTINATION cmake)
-
-target_link_libraries(${PROJECT_NAME} -lboost_system -lboost_filesystem -pthread)
+target_link_libraries(${PROJECT_NAME} -pthread -std=c++14 -lboost_system -lboost_filesystem)
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+install(FILES main.cpp DESTINATION bin)
 
 include(CPackConfig.cmake)
