@@ -20,7 +20,10 @@
   "script": [
     "export EXPLORER_LOG_PATH=\"log.txt\"",
     "cmake -H. -B_build",
-    "cmake --build _build"
+    "cmake --build _build",
+    "cd _build",
+    "./explorer CMakeCache.txt",
+    "cd .."
   ],
   "group": "stable",
   "os": "linux"
