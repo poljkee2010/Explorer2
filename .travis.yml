@@ -1,18 +1,41 @@
-sudo: true
-language: cpp
-compiler: gcc
-addons:
-  apt:
-    sources:
-      - george-edison55-precise-backports
-    packages:
-      - cmake
-      - cmake-data
-script:
-- export EXPLORER_LOG_PATH="log.txt"
-- make -j 2
-- cmake --build _build --target package
-- cd _build
-- ./explorer CMakeCache.txt
-- cd ..
-- mv _build/*.tar.gz artifacts
+{
+  "language": "cpp",
+  "sudo": false,
+  "before_install": [
+    "export CXX=$CXX_EVAL",
+    "export CC=$CC_EVAL",
+    "export CXXFLAGS=\"-Werror\""
+  ],
+  "install": [
+    "DEPS_DIR=\"${TRAVIS_BUILD_DIR}/deps\"",
+    "mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}",
+    "if [[ \"${TRAVIS_OS_NAME}\" == \"linux\" ]]; then\n  CMAKE_URL=\"https://cmake.org/files/v3.9/cmake-3.9.4-Linux-x86_64.tar.gz\"\n  mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake\n  export PATH=${DEPS_DIR}/cmake/bin:${PATH}\nelif [[ \"${TRAVIS_OS_NAME}\" == \"osx\" ]]; then\n  which cmake || brew install cmake\nfi\n"
+  ],
+  "before_script": [
+    "which $CXX",
+    "$CXX --version",
+    "cd ..",
+    "export EXPLORER_LOG_PATH=\"log.txt\"",
+    "cmake -H. -BBuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE}",
+    "cd Build"
+  ],
+  "script": [
+    "export EXPLORER_LOG_PATH=\"log.txt\"",
+    "make -j 2"
+  ],
+  "group": "stable",
+  "dist": "trusty",
+  "addons": {
+    "apt": {
+      "sources": [
+        "ubuntu-toolchain-r-test"
+      ],
+      "packages": [
+        "g++-7"
+      ]
+    }
+  },
+  "compiler": "gcc",
+  "env": "CXX_EVAL=\"g++-7\" CC_EVAL=\"gcc-7\" BUILD_TYPE='Release'",
+  "os": "linux"
+}
