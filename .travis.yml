@@ -10,8 +10,7 @@ addons:
       - cmake-data
 script:
 - export EXPLORER_LOG_PATH="log.txt"
-- cmake -H. -B_build
-- cmake --build _build
+- make -j 2
 - cmake --build _build --target package
 - cd _build
 - ./explorer CMakeCache.txt
