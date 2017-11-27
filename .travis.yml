@@ -17,9 +17,15 @@
     "sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90"
   ],
   "script": [
-    "cmake -H. -B_builds -DCPACK_GENERATOR=DEB",
-    "cmake --build _builds",
-    "cmake --build _builds --target package"
+- export EXPLORER_LOG_PATH="log.txt"
+- cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install -DBUILD_TESTS=ON -DCPACK_GENERATOR=TGZ
+- cmake --build _build
+- cd _build
+- ./explorer CMakeCache.txt
+- cd ..
+- cmake --build _build --target package
+- mv _build/*.tar.gz artifacts
+
   ],
   "group": "stable",
   "os": "linux"
